@@ -16,7 +16,7 @@ def home():
 def upload():
     # Check if file was uploaded
     if 'image' not in request.files:
-        print("NO IMAGE UPLOADED")
+        print("NO IMAGE UPLOADED ...")
         return redirect(url_for('home'))
     file = request.files['image']
     # Check if file has valid extension
