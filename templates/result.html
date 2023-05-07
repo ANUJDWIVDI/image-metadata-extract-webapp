@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Image Upload Result</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+      #image {
+        max-width: 100%;
+        max-height: 300px;
+        margin-bottom: 20px;
+      }
+      #map {
+        max-width: 100%;
+        max-height: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mt-5 mb-4">Image Upload Result</h1>
+      {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+      {% else %}
+        <div class="row">
+          <div class="col-md-6">
+            <img src="{{ image_url }}" alt="Uploaded Image" id="image">
+            <ul class="list-unstyled"></ul>
+                <li><strong>Camera make:</strong> {{ map_metadata.camera_make }}</li>
+                <li><strong>Camera model:</strong> {{ map_metadata.camera_model }}</li>
+                <li><strong>Software:</strong> {{ map_metadata.software }}</li>
+                <li><strong>Date/time original:</strong> {{ map_metadata.date_time_original }}</li>
+                {% if map_metadata.lat and map_metadata.lon %}
+                 <li><strong>Latitude:</strong> {{ map_metadata.lat }}</li>
+                 <li><strong>Longitude:</strong> {{ map_metadata.lon }}</li>
+                {% else %}
+                <li>No GPS data available.</li>
+                {% endif %}
+            </ul>
+
+          </div>
+          <div class="col-md-6">
+            <div id="map"></div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+    <script>
+      var mapbox_token = '{{ mapbox_access_token }}';
+      var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [{{ map_metadata.lon }}, {{ map_metadata.lat }}],
+        zoom: 13,
+        accessToken: mapbox_token
+      });
+      var marker = new mapboxgl.Marker()
+        .setLngLat([{{ map_metadata.lon }}, {{ map_metadata.lat }}])
+        .addTo(map);
+    </script>
+  </body>
+</html>
